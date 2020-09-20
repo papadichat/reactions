@@ -3,90 +3,86 @@ import CardCss from "./style";
 import axios from "axios";
 import ReactTooltip from "react-tooltip";
 
-function Reaction({ info, reactions, users }) {
-  const { Info, setInfo } = useState([]);
-  useEffect(() => {
-    console.log(info);
-    console.log(users);
-    let new_info = info.map((con) => {
-      let user = users.find((user) => user.id === con.user_id);
-      console.log(user);
-      return { ...con, first_name: user.first_name, last_name: user.last_name };
-    });
+class Reaction extends React.Component {
+  constructor(props) {
+    super(props);
 
-    console.log(new_info);
-  }, []);
+    this.state = {
+      loading: true,
+      reaction_data: [],
+    };
+  }
 
-  return (
-    <CardCss>
-      <div className="reactions">
-        <span>
-          {info.some((data) => data.reaction_id === 1) && (
-            <>
-              <span data-tip data-for="i" className="reaction">
-                {reactions && reactions[0] && reactions[0].emoji}
-              </span>
-              <ReactTooltip id="i" place="bottom" type="dark">
-                <span>{reactions && reactions[0] && reactions[0].name}</span>
-              </ReactTooltip>{" "}
-            </>
-          )}
-          {info.some((data) => data.reaction_id === 2) && (
-            <>
-              <span data-tip data-for="b" className="reaction">
-                {reactions && reactions[1] && reactions[1].emoji}
-              </span>
-              <ReactTooltip id="b" place="bottom" type="dark">
-                <span>{reactions && reactions[1] && reactions[1].name}</span>
-              </ReactTooltip>
-            </>
-          )}
-          {info.some((data) => data.reaction_id === 3) && (
-            <>
-              <span data-tip data-for="c" className="reaction">
-                {reactions && reactions[2] && reactions[2].emoji}
-              </span>
-              <ReactTooltip id="c" place="bottom" type="dark">
-                <span>{reactions && reactions[2] && reactions[2].name}</span>
-              </ReactTooltip>
-            </>
-          )}
-
-          {info.some((data) => data.reaction_id === 4) && (
-            <>
-              <span data-tip data-for="d" className="reaction">
-                {reactions && reactions[3] && reactions[3].emoji}
-              </span>{" "}
-              <ReactTooltip id="d" place="bottom" type="dark">
-                <span>{reactions && reactions[3] && reactions[3].name}</span>
-              </ReactTooltip>
-            </>
-          )}
-          {info.some((data) => data.reaction_id === 5) && (
-            <>
-              <span data-tip data-for="e" className="reaction">
-                {reactions && reactions[4] && reactions[4].emoji}
-              </span>{" "}
-              <ReactTooltip id="e" place="bottom" type="dark">
-                <span>{reactions && reactions[4] && reactions[4].name}</span>
-              </ReactTooltip>
-            </>
-          )}
-          {info.some((data) => data.reaction_id === 6) && (
-            <>
-              <span data-tip data-for="a" className="reaction">
-                {reactions && reactions[5] && reactions[5].emoji}
-              </span>{" "}
-              <ReactTooltip id="a" place="bottom" type="dark">
-                <span>{reactions && reactions[5] && reactions[5].name}</span>
-              </ReactTooltip>
-            </>
-          )}
-        </span>
-      </div>
-      <div className="trigger"></div>
-    </CardCss>
-  );
+  componentDidMount() {}
+  getData = (e) => {
+    let id = e.target.getAttribute("data-for");
+    console.log(e.target);
+    axios
+      .get(
+        `https://artful-iudex.herokuapp.com/user_content_reactions?reaction_id=${id}`
+      )
+      .then((res) => {
+        console.log(res);
+        const { data } = res;
+        this.setState({ reaction_data: data });
+      })
+      .catch((err) => console.log(err));
+  };
+  render() {
+    const { info, users, reactions } = this.props;
+    const { reaction_data } = this.state;
+    return (
+      <CardCss>
+        <div className="reactions">
+          <span>
+            {reactions.map((reaction, index) => {
+              return (
+                info.some((data) => data.reaction_id === reaction.id) && (
+                  <>
+                    <span
+                      name={reaction.id}
+                      data-tip
+                      data-for={reaction.id}
+                      className="reaction"
+                    >
+                      {reactions && reactions[index] && reactions[index].emoji}
+                    </span>
+                    <ReactTooltip
+                      afterShow={this.getData}
+                      id={reaction.id.toString()}
+                      place="bottom"
+                      type="dark"
+                    >
+                      <p>
+                        {reactions && reactions[index] && reactions[index].name}
+                      </p>
+                      {reaction_data.map((rec) => {
+                        return (
+                          <p key={rec.id}>
+                            {" "}
+                            {users[
+                              users.findIndex((user) => user.id === rec.user_id)
+                            ].first_name +
+                              " " +
+                              users[
+                                users.findIndex(
+                                  (user) => user.id === rec.user_id
+                                )
+                              ].last_name}{" "}
+                          </p>
+                        );
+                      })}
+                    </ReactTooltip>{" "}
+                  </>
+                )
+              );
+            })}
+          </span>
+        </div>
+        <div className="trigger"></div>
+      </CardCss>
+    );
+  }
 }
 
 export default Reaction;

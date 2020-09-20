@@ -6,7 +6,15 @@ function App() {
   const [content1, setContent1] = useState([]);
   const [content2, setContent2] = useState([]);
   const [reactions, setReactions] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([
+    {
+      id: 0,
+      first_name: "Susmit",
+      last_name: "Rao",
+      email: "lphippen0@berkeley.edu",
+      avatar: "http://dummyimage.com/128x134.png/dddddd/000000",
+    },
+  ]);
   useEffect(() => {
     axios
       .get(
@@ -41,7 +49,7 @@ function App() {
       .then((res) => {
         console.log(res);
         const { data } = res;
-        setUsers(data);
+        setUsers([...users, ...data]);
       })
       .catch((err) => console.log(err));
   }, []);
