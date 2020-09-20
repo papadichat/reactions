@@ -12,7 +12,6 @@ const CardCss = styled.div`
     .reaction {
       height: 16px;
       width: 16px;
-      margin-right: 16px;
     }
   }
 `;
