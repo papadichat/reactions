@@ -32,55 +32,63 @@ class Reaction extends React.Component {
     const { info, users, reactions } = this.props;
     const { reaction_data } = this.state;
     return (
-      <CardCss>
-        <div className="reactions">
-          <span>
-            {reactions.map((reaction, index) => {
-              return (
-                info.some((data) => data.reaction_id === reaction.id) && (
-                  <>
-                    <span
-                      name={reaction.id}
-                      data-tip
-                      data-for={reaction.id}
-                      className="reaction"
-                    >
-                      {reactions && reactions[index] && reactions[index].emoji}
-                    </span>
-                    <ReactTooltip
-                      afterShow={this.getData}
-                      id={reaction.id.toString()}
-                      place="bottom"
-                      type="dark"
-                    >
-                      <p>
-                        {reactions && reactions[index] && reactions[index].name}
-                      </p>
-                      {reaction_data.map((rec) => {
-                        return (
-                          <p key={rec.id}>
-                            {" "}
-                            {users[
-                              users.findIndex((user) => user.id === rec.user_id)
-                            ].first_name +
-                              " " +
-                              users[
+      <>
+        <CardCss>
+          <div classNameName="reactions">
+            <span>
+              {reactions.map((reaction, index) => {
+                return (
+                  info.some((data) => data.reaction_id === reaction.id) && (
+                    <>
+                      <span
+                        name={reaction.id}
+                        data-tip
+                        data-for={reaction.id}
+                        classNameName="reaction"
+                      >
+                        {reactions &&
+                          reactions[index] &&
+                          reactions[index].emoji}
+                      </span>
+                      <ReactTooltip
+                        afterShow={this.getData}
+                        id={reaction.id.toString()}
+                        place="bottom"
+                        type="dark"
+                      >
+                        <p>
+                          {reactions &&
+                            reactions[index] &&
+                            reactions[index].name}
+                        </p>
+                        {reaction_data.map((rec) => {
+                          return (
+                            <p key={rec.id}>
+                              {" "}
+                              {users[
                                 users.findIndex(
                                   (user) => user.id === rec.user_id
                                 )
-                              ].last_name}{" "}
-                          </p>
-                        );
-                      })}
-                    </ReactTooltip>{" "}
-                  </>
-                )
-              );
-            })}
-          </span>
-        </div>
-        <div className="trigger"></div>
-      </CardCss>
+                              ].first_name +
+                                " " +
+                                users[
+                                  users.findIndex(
+                                    (user) => user.id === rec.user_id
+                                  )
+                                ].last_name}{" "}
+                            </p>
+                          );
+                        })}
+                      </ReactTooltip>{" "}
+                    </>
+                  )
+                );
+              })}
+            </span>
+          </div>
+          <div classNameName="trigger"></div>
+        </CardCss>
+      </>
     );
   }
 }
