@@ -12,6 +12,7 @@ class Reaction extends React.Component {
       reaction_data: [],
       modal: false,
       show: false,
+      current_id: null,
     };
   }
 
@@ -32,7 +33,7 @@ class Reaction extends React.Component {
   };
   render() {
     const { info, users, reactions } = this.props;
-    const { reaction_data, modal, show } = this.state;
+    const { reaction_data, modal, show, current_id } = this.state;
     return (
       <>
         <CardCss>
@@ -46,10 +47,22 @@ class Reaction extends React.Component {
                     return (
                       info.some((data) => data.reaction_id === reaction.id) && (
                         <>
-                          <div name={reaction.id} className="reaction">
+                          <div
+                            name={reaction.id}
+                            className={`reaction ${
+                              current_id === reaction.id ? "active" : ""
+                            }`}
+                          >
                             {reactions &&
                               reactions[index] &&
                               reactions[index].emoji}
+                            <span>
+                              {
+                                info.filter(
+                                  (each) => each.reaction_id === reaction.id
+                                ).length
+                              }
+                            </span>
                           </div>
                         </>
                       )
@@ -66,7 +79,19 @@ class Reaction extends React.Component {
                 ></button>
               </header>
               <section className="modal-card-body">
-                <p>hi</p>
+                {reaction_data.map((rec) => {
+                  return (
+                    <p key={rec.id}>
+                      {" "}
+                      {users[users.findIndex((user) => user.id === rec.user_id)]
+                        .first_name +
+                        " " +
+                        users[
+                          users.findIndex((user) => user.id === rec.user_id)
+                        ].last_name}{" "}
+                    </p>
+                  );
+                })}
               </section>
               <footer className="modal-card-foot">
                 <button className="button is-success">Save changes</button>
@@ -92,8 +117,11 @@ class Reaction extends React.Component {
                         data-tip
                         data-for={reaction.id}
                         className="reaction"
-                        onClick={() => {
-                          this.setState({ modal: true });
+                        onClick={(e) => {
+                          this.setState(
+                            { modal: true, current_id: reaction.id },
+                            this.getData(e)
+                          );
                         }}
                         style={{ cursor: "pointer" }}
                       >
@@ -136,6 +164,7 @@ class Reaction extends React.Component {
                 );
               })}
             </span>
+            <span>{info.length}</span>
           </div>
           <div className="trigger">
             <div className={`reactions-container ${show ? "show" : ""} `}>
