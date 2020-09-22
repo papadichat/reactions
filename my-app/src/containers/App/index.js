@@ -4,7 +4,6 @@ import Reaction from "../../components/Reaction";
 import axios from "axios";
 import "bulma/css/bulma.css";
 function App() {
-  const [modal, setModal] = useState(false);
   const [content1, setContent1] = useState([]);
   const [content2, setContent2] = useState([]);
   const [reactions, setReactions] = useState([]);
@@ -58,29 +57,6 @@ function App() {
 
   return (
     <CardCss>
-      <div className={`modal ${modal ? "is-active" : ""}`}>
-        <div className="modal-background"></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title">Modal title</p>
-            <button className="delete" aria-label="close"></button>
-          </header>
-          <section className="modal-card-body">
-            <p>hi</p>
-          </section>
-          <footer className="modal-card-foot">
-            <button className="button is-success">Save changes</button>
-            <button
-              className="button"
-              onClick={() => {
-                setModal(false);
-              }}
-            >
-              Cancel
-            </button>
-          </footer>
-        </div>
-      </div>
       <div className="App">
         <div className="content-container">
           <div className="cont"></div>

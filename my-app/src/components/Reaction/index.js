@@ -10,6 +10,8 @@ class Reaction extends React.Component {
     this.state = {
       loading: true,
       reaction_data: [],
+      modal: false,
+      show: false,
     };
   }
 
@@ -30,11 +32,56 @@ class Reaction extends React.Component {
   };
   render() {
     const { info, users, reactions } = this.props;
-    const { reaction_data } = this.state;
+    const { reaction_data, modal, show } = this.state;
     return (
       <>
         <CardCss>
-          <div classNameName="reactions">
+          <div className={`modal ${modal ? "is-active" : ""}`}>
+            <div className="modal-background"></div>
+            <div className="modal-card">
+              <header className="modal-card-head">
+                <div className="reactions1">
+                  <div className="reaction">All</div>
+                  {reactions.map((reaction, index) => {
+                    return (
+                      info.some((data) => data.reaction_id === reaction.id) && (
+                        <>
+                          <div name={reaction.id} className="reaction">
+                            {reactions &&
+                              reactions[index] &&
+                              reactions[index].emoji}
+                          </div>
+                        </>
+                      )
+                    );
+                  })}
+                </div>
+
+                <button
+                  className="delete"
+                  aria-label="close"
+                  onClick={() => {
+                    this.setState({ modal: false });
+                  }}
+                ></button>
+              </header>
+              <section className="modal-card-body">
+                <p>hi</p>
+              </section>
+              <footer className="modal-card-foot">
+                <button className="button is-success">Save changes</button>
+                <button
+                  className="button"
+                  onClick={() => {
+                    this.setState({ modal: false });
+                  }}
+                >
+                  Cancel
+                </button>
+              </footer>
+            </div>
+          </div>
+          <div className="reactions">
             <span>
               {reactions.map((reaction, index) => {
                 return (
@@ -44,7 +91,11 @@ class Reaction extends React.Component {
                         name={reaction.id}
                         data-tip
                         data-for={reaction.id}
-                        classNameName="reaction"
+                        className="reaction"
+                        onClick={() => {
+                          this.setState({ modal: true });
+                        }}
+                        style={{ cursor: "pointer" }}
                       >
                         {reactions &&
                           reactions[index] &&
@@ -86,7 +137,38 @@ class Reaction extends React.Component {
               })}
             </span>
           </div>
-          <div classNameName="trigger"></div>
+          <div className="trigger">
+            <div className={`reactions-container ${show ? "show" : ""} `}>
+              {reactions.map((reaction, index) => {
+                return (
+                  <>
+                    <span data-tip data-for={reaction.id.toString() + "reac"}>
+                      {reaction.emoji}
+                    </span>{" "}
+                    <ReactTooltip
+                      id={reaction.id.toString() + "reac"}
+                      place="bottom"
+                      type="dark"
+                    >
+                      <p>
+                        {reactions && reactions[index] && reactions[index].name}
+                      </p>
+                    </ReactTooltip>{" "}
+                  </>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              className="button"
+              onMouseEnter={() => {
+                this.setState({ show: true });
+              }}
+            >
+              <span className="material-icons">thumb_up_alt</span>
+              <p>Like</p>
+            </button>
+          </div>
         </CardCss>
       </>
     );
