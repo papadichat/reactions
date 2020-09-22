@@ -20,6 +20,23 @@ const CardCss = styled.div`
         }
       }
     }
+    .modal-card-body {
+      display: flex;
+      flex-direction: column;
+      .user-info {
+        display: flex;
+        .user-pic {
+          margin-right: 20px;
+          border: 1px solid grey;
+          border-radius: 50%;
+          img {
+            max-width: 70px;
+            max-height: 70px;
+            object-fit: contain;
+          }
+        }
+      }
+    }
   }
   .reactions {
     display: flex;
@@ -57,7 +74,18 @@ const CardCss = styled.div`
       background: #fff;
       height: 32px;
       padding: 0 20px 10px 20px;
-      bottom: 15px;
+      bottom: 20px;
+
+      .rec {
+        font-size: 16px;
+        margin-right: 16px;
+        cursor: pointer;
+        :hover {
+          position: absolute;
+          font-size: 32px;
+          z-index: 5;
+        }
+      }
     }
     .show {
       display: block;

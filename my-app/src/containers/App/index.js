@@ -4,8 +4,6 @@ import Reaction from "../../components/Reaction";
 import axios from "axios";
 import "bulma/css/bulma.css";
 function App() {
-  const [content1, setContent1] = useState([]);
-  const [content2, setContent2] = useState([]);
   const [reactions, setReactions] = useState([]);
   const [users, setUsers] = useState([
     {
@@ -17,26 +15,6 @@ function App() {
     },
   ]);
   useEffect(() => {
-    axios
-      .get(
-        `https://artful-iudex.herokuapp.com/user_content_reactions?content_id=1`
-      )
-      .then((res) => {
-        console.log(res);
-        const { data } = res;
-        setContent1(data);
-      })
-      .catch((err) => console.log(err));
-    axios
-      .get(
-        `https://artful-iudex.herokuapp.com/user_content_reactions?content_id=2`
-      )
-      .then((res) => {
-        console.log(res);
-        const { data } = res;
-        setContent2(data);
-      })
-      .catch((err) => console.log(err));
     axios
       .get(`https://artful-iudex.herokuapp.com/reactions`)
       .then((res) => {
@@ -60,11 +38,11 @@ function App() {
       <div className="App">
         <div className="content-container">
           <div className="cont"></div>
-          <Reaction info={content1} users={users} reactions={reactions} />
+          <Reaction users={users} reactions={reactions} content_id={1} />
         </div>
         <div className="content-container">
           <div className="cont"></div>
-          <Reaction info={content2} users={users} reactions={reactions} />
+          <Reaction content_id={2} users={users} reactions={reactions} />
         </div>
       </div>
     </CardCss>
