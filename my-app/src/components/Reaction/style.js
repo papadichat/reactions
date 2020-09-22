@@ -10,8 +10,13 @@ const CardCss = styled.div`
         justify-content: space-between;
         flex: 1;
         .reaction {
+          display: flex;
+          justify-content: center;
           cursor: pointer;
           flex: 1;
+        }
+        .active {
+          border-bottom: 1px solid blue;
         }
       }
     }
@@ -42,16 +47,17 @@ const CardCss = styled.div`
     justify-content: flex-start;
     align-items: center;
     height: 32px;
-
+    position: relative;
     background: #fff;
     padding: 0 20px 10px 20px;
     .reactions-container {
       display: none;
-      position: relative;
+      position: absolute;
       z-index: 50;
       background: #fff;
       height: 32px;
       padding: 0 20px 10px 20px;
+      bottom: 15px;
     }
     .show {
       display: block;
