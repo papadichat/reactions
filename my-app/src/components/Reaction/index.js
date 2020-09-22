@@ -136,6 +136,7 @@ class Reaction extends React.Component {
                 );
               })}
             </span>
+            <span>{info.length}</span>
           </div>
           <div className="trigger">
             <div className={`reactions-container ${show ? "show" : ""} `}>
