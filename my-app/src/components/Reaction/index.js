@@ -16,6 +16,7 @@ class Reaction extends React.Component {
       info: [],
       reaction_added: false,
       reaction: null,
+      content_id: null,
     };
   }
 
@@ -32,23 +33,39 @@ class Reaction extends React.Component {
       })
       .catch((err) => console.log(err));
   }
+
+  removeEmoji = () => {
+    axios
+      .delete(
+        `https://artful-iudex.herokuapp.com/user_content_reactions/${this.state.content_id}`
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          let copy_info = [...this.state.info];
+          let new_data = copy_info.filter(
+            (data) => data.id !== this.state.content_id
+          );
+          this.setState({ info: new_data, reaction_added: false });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
   addEmoji = (reaction_id) => {
     if (this.state.reaction !== null) {
       axios
-        .delete(`https://artful-iudex.herokuapp.com/user_content_reactions`, {
-          user_id: 0,
-          content_id: this.props.content_id,
-          reaction_id: this.state.rection,
-        })
+        .delete(
+          `https://artful-iudex.herokuapp.com/user_content_reactions/${this.state.content_id}`
+        )
         .then((res) => {
           console.log(res);
-          const { data } = res;
-          this.setState({
-            info: [...this.state.info, data],
-            reaction_added: true,
-            reaction: data.reaction_id,
-            show: false,
-          });
+          if (res.status === 200) {
+            let copy_info = [...this.state.info];
+            let new_data = copy_info.filter(
+              (data) => data.id !== this.state.content_id
+            );
+            this.setState({ info: new_data });
+          }
         })
         .catch((err) => console.log(err));
     }
@@ -66,6 +83,7 @@ class Reaction extends React.Component {
           reaction_added: true,
           reaction: data.reaction_id,
           show: false,
+          content_id: data.id,
         });
       })
       .catch((err) => console.log(err));
@@ -166,44 +184,46 @@ class Reaction extends React.Component {
                   reaction_data.map((rec) => {
                     return (
                       <div className="user-info">
-                        <div className="user-pic">
-                          <img
-                            src={
+                        <div className="k">
+                          <div className="user-pic">
+                            <img
+                              src={
+                                users[
+                                  users.findIndex(
+                                    (user) => user.id === rec.user_id
+                                  )
+                                ].avatar
+                              }
+                              alt="user_pic"
+                            />
+                          </div>
+
+                          <p key={rec.id}>
+                            {" "}
+                            {users[
+                              users.findIndex((user) => user.id === rec.user_id)
+                            ].first_name +
+                              " " +
                               users[
                                 users.findIndex(
                                   (user) => user.id === rec.user_id
                                 )
-                              ].avatar
-                            }
-                            alt="user_pic"
-                          />
+                              ].last_name}{" "}
+                          </p>
                         </div>
-
-                        <p key={rec.id}>
-                          {" "}
-                          {users[
-                            users.findIndex((user) => user.id === rec.user_id)
-                          ].first_name +
-                            " " +
+                        <a
+                          href={`mailto: ${
                             users[
                               users.findIndex((user) => user.id === rec.user_id)
-                            ].last_name}{" "}
-                        </p>
+                            ].email
+                          }`}
+                        >
+                          Send Friend Request
+                        </a>
                       </div>
                     );
                   })}
               </section>
-              <footer className="modal-card-foot">
-                <button className="button is-success">Save changes</button>
-                <button
-                  className="button"
-                  onClick={() => {
-                    this.setState({ modal: false });
-                  }}
-                >
-                  Cancel
-                </button>
-              </footer>
             </div>
           </div>
           <div className="reactions">
@@ -266,15 +286,41 @@ class Reaction extends React.Component {
                   );
                 })}
             </span>
-            <span>{info.length}</span>
+            {this.state.reaction_added ? (
+              <span
+                onClick={() => {
+                  this.setState({ modal: true, current_id: 0 }, this.getAll);
+                }}
+                className="no"
+              >
+                You and {info.length} others
+              </span>
+            ) : (
+              <span
+                onClick={() => {
+                  this.setState({ modal: true, current_id: 0 }, this.getAll);
+                }}
+                className="no"
+              >
+                {info.length}
+              </span>
+            )}
           </div>
           <div className="trigger">
-            <div className={`reactions-container ${show ? "show" : ""} `}>
+            <div
+              onMouseEnter={() => {
+                setTimeout(() => this.setState({ show: true }), 1500);
+              }}
+              onMouseLeave={() => {
+                setTimeout(() => this.setState({ show: false }), 1500);
+              }}
+              className={`reactions-container ${show ? "show" : ""} `}
+            >
               {reactions &&
                 reactions.map((reaction, index) => {
                   return (
                     <>
-                      <span
+                      <div
                         className="rec"
                         onClick={() => {
                           this.addEmoji(reaction.id);
@@ -283,7 +329,7 @@ class Reaction extends React.Component {
                         data-for={reaction.id.toString() + "reac"}
                       >
                         {reaction.emoji}
-                      </span>{" "}
+                      </div>{" "}
                       <ReactTooltip
                         id={reaction.id.toString() + "reac"}
                         place="top"
@@ -303,8 +349,12 @@ class Reaction extends React.Component {
               <button
                 type="button"
                 className="button"
+                onClick={this.removeEmoji}
+                onMouseLeave={() => {
+                  setTimeout(() => this.setState({ show: false }), 1500);
+                }}
                 onMouseEnter={() => {
-                  this.setState({ show: true });
+                  setTimeout(() => this.setState({ show: true }), 1500);
                 }}
               >
                 {" "}
@@ -315,8 +365,14 @@ class Reaction extends React.Component {
               <button
                 type="button"
                 className="button"
+                onClick={() => {
+                  this.addEmoji(1);
+                }}
                 onMouseEnter={() => {
-                  this.setState({ show: true });
+                  setTimeout(() => this.setState({ show: true }), 1500);
+                }}
+                onMouseLeave={() => {
+                  setTimeout(() => this.setState({ show: false }), 1500);
                 }}
               >
                 <span className="material-icons">thumb_up_alt</span>
