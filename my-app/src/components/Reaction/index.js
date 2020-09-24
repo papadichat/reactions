@@ -211,15 +211,21 @@ class Reaction extends React.Component {
                               ].last_name}{" "}
                           </p>
                         </div>
-                        <a
-                          href={`mailto: ${
-                            users[
-                              users.findIndex((user) => user.id === rec.user_id)
-                            ].email
-                          }`}
-                        >
-                          Send Friend Request
-                        </a>
+                        {users[
+                          users.findIndex((user) => user.id === rec.user_id)
+                        ].id !== 0 && (
+                          <a
+                            href={`mailto: ${
+                              users[
+                                users.findIndex(
+                                  (user) => user.id === rec.user_id
+                                )
+                              ].email
+                            }`}
+                          >
+                            Send Friend Request
+                          </a>
+                        )}
                       </div>
                     );
                   })}
