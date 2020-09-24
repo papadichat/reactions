@@ -132,7 +132,8 @@ const CardCss = styled.div`
         margin-left: 16px;
         cursor: pointer;
         :hover {
-          font-size: 32px;
+          transform: scale(2);
+          transform-origin: bottom;
         }
       }
     }
